@@ -1,10 +1,4 @@
-router.post("/", protect, createBudget);
 
-router.get("/", protect, getBudgets);
-
-router.put("/:id", protect, updateBudget);
-
-router.delete("/:id", protect, deleteBudget);
 const Budget = require("../models/Budget");
 
 // Create Budget

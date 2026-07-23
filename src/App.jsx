@@ -2,14 +2,14 @@ import { Routes, Route } from "react-router-dom";
 
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Dashboard from "./pages/Dashboard";
+import Dashboard from "./pages/DashBoard";
 import Transactions from "./pages/Transactions";
 import Profile from "./pages/Profile";
 import Reports from "./pages/Reports";
 import Profile from "./pages/Profile";
 import Budget from "./pages/Budget";
 import Settings from "./pages/Settings";
-import Dashboard from "./pages/Dashboard";
+import Dashboard from "./pages/DashBoard";
 
 function App() {
   return (

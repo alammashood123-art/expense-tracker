@@ -32,7 +32,7 @@ const addTransaction = async (req, res) => {
     });
   }
 };
-const Transaction = require("../models/Transaction");
+
 
 // Get all transactions
 const getTransactions = async (req, res) => {
