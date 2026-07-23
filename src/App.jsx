@@ -6,10 +6,8 @@ import Dashboard from "./pages/DashBoard";
 import Transactions from "./pages/Transactions";
 import Profile from "./pages/Profile";
 import Reports from "./pages/Reports";
-import Profile from "./pages/Profile";
 import Budget from "./pages/Budget";
 import Settings from "./pages/Settings";
-import Dashboard from "./pages/DashBoard";
 
 function App() {
   return (
@@ -20,13 +18,8 @@ function App() {
       <Route path="/transactions" element={<Transactions />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/reports" element={<Reports />} />
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route
-    path="/budgets"
-    element={<Budget />}
-/>
-    <Route path="/settings" element={<Settings />} />
+      <Route path="/budgets" element={<Budget />} />
+      <Route path="/settings" element={<Settings />} />
     </Routes>
   );
 }
