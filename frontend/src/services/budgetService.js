@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://expense-tracker-backend-production.up.railway.app",
+  baseURL: "http://localhost:5000/api/budgets",
 });
 
 API.interceptors.request.use((config) => {
@@ -14,9 +14,15 @@ API.interceptors.request.use((config) => {
   return config;
 });
 
-export const deleteTransaction = (id) =>
-  API.delete(`/${id}`);
-export const getTransactions = () => API.get("/");
-export const updateTransaction = (id, data) =>
+export const getBudgets = () => API.get("/");
+
+export const createBudget = (data) =>
+  API.post("/", data);
+
+export const updateBudget = (id, data) =>
   API.put(`/${id}`, data);
+
+export const deleteBudget = (id) =>
+  API.delete(`/${id}`);
+
 export default API;
