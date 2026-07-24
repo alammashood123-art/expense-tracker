@@ -5,7 +5,6 @@ import SummaryCard from "../components/SummaryCard";
 import { getDashboardData } from "../services/dashboardService";
 import BarChartComponent from "../components/charts/BarChartComponent";
 import PieChartComponent from "../components/charts/PieChartComponent";
-import { useEffect, useState } from "react";
 import { getTransactions } from "../services/transactionService";
 
 function Dashboard() {

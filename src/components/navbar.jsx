@@ -1,3 +1,4 @@
+  import { useTheme } from "../context/ThemeContext";
 function Navbar() {
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -6,7 +7,6 @@ function Navbar() {
     localStorage.removeItem("user");
     window.location.href = "/";
   };
-  import { useTheme } from "../context/ThemeContext";
 
   const { darkMode, toggleTheme } = useTheme();
 

@@ -6,49 +6,24 @@ import API, {
 } from "../services/transactionService";
 import TransactionTable from "../components/TransactionTable";
 
-function Transactions() {
-    const [search, setSearch] = useState("");
-    const [filterType, setFilterType] = useState("all");
-    const [filterCategory, setFilterCategory] = useState("all");
-    const [transactions, setTransactions] = useState([]);
-    const [search, setSearch] = useState("");
-    const [categoryFilter, setCategoryFilter] = useState("All");
-    const [typeFilter, setTypeFilter] = useState("All");
-    const filteredTransactions = transactions.filter((transaction) => {
+function Transaction() {
+  const [transactions, setTransactions] = useState([]);
+  const [search, setSearch] = useState("");
+  const [filterType, setFilterType] = useState("all");
+  const [filterCategory, setFilterCategory] = useState("all");
 
-  const matchesSearch =
-    transaction.title
-      .toLowerCase()
-      .includes(search.toLowerCase());
-
-  const matchesType =
-    filterType === "all"
-      ? true
-      : transaction.type === filterType;
-
-  const matchesCategory =
-    filterCategory === "all"
-      ? true
-      : transaction.category === filterCategory;
-
-  return (
-    matchesSearch &&
-    matchesType &&
-    matchesCategory
-  );
-});
   const [editingId, setEditingId] = useState(null);
 
   const [formData, setFormData] = useState({
-  title: "",
-  amount: "",
-  category: "",
-  type: "",
-  date: "",
-  note: "",
-  isRecurring: false,
-  frequency: "monthly",
-});
+    title: "",
+    amount: "",
+    type: "expense",
+    category: "",
+    date: "",
+    note: "",
+    isRecurring: false,
+    frequency: "monthly",
+  });
 
   useEffect(() => {
     loadTransactions();
@@ -64,9 +39,11 @@ function Transactions() {
   };
 
   const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: type === "checkbox" ? checked : value,
     });
   };
 
@@ -80,10 +57,11 @@ function Transactions() {
       category: "",
       date: "",
       note: "",
+      isRecurring: false,
+      frequency: "monthly",
     });
   };
 
-  // ADD TRANSACTION
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -93,37 +71,24 @@ function Transactions() {
       alert(response.data.message);
 
       resetForm();
-
       loadTransactions();
     } catch (error) {
-      alert(
-        error.response?.data?.message ||
-          "Failed to add transaction"
-      );
+      alert(error.response?.data?.message || "Failed to add transaction");
     }
   };
 
-  // DELETE TRANSACTION
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this transaction?"
-    );
-
-    if (!confirmDelete) return;
+    if (!window.confirm("Are you sure you want to delete this transaction?"))
+      return;
 
     try {
       await deleteTransaction(id);
-
       loadTransactions();
     } catch (error) {
-      alert(
-        error.response?.data?.message ||
-          "Delete failed"
-      );
+      alert(error.response?.data?.message || "Delete failed");
     }
   };
 
-  // EDIT BUTTON
   const handleEdit = (transaction) => {
     setEditingId(transaction._id);
 
@@ -136,6 +101,8 @@ function Transactions() {
         ? transaction.date.split("T")[0]
         : "",
       note: transaction.note || "",
+      isRecurring: transaction.isRecurring || false,
+      frequency: transaction.frequency || "monthly",
     });
 
     window.scrollTo({
@@ -144,7 +111,6 @@ function Transactions() {
     });
   };
 
-  // UPDATE TRANSACTION
   const handleUpdate = async (e) => {
     e.preventDefault();
 
@@ -154,114 +120,80 @@ function Transactions() {
       alert("Transaction Updated Successfully");
 
       resetForm();
-
       loadTransactions();
     } catch (error) {
-      alert(
-        error.response?.data?.message ||
-          "Update Failed"
-      );
+      alert(error.response?.data?.message || "Update Failed");
     }
   };
-const filteredTransactions = transactions.filter((transaction) => {
-  const matchesSearch = transaction.title
-    .toLowerCase()
-    .includes(search.toLowerCase());
 
-  const matchesCategory =
-    categoryFilter === "All" ||
-    transaction.category === categoryFilter;
+  const filteredTransactions = transactions.filter((transaction) => {
+    const matchesSearch = transaction.title
+      .toLowerCase()
+      .includes(search.toLowerCase());
 
-  const matchesType =
-    typeFilter === "All" ||
-    transaction.type === typeFilter;
+    const matchesType =
+      filterType === "all" || transaction.type === filterType;
+
+    const matchesCategory =
+      filterCategory === "all" ||
+      transaction.category === filterCategory;
+
+    return (
+      matchesSearch &&
+      matchesType &&
+      matchesCategory
+    );
+  });
 
   return (
-    matchesSearch &&
-    matchesCategory &&
-    matchesType
-  );
-});
-
-  return (
-
-    
     <div className="min-h-screen bg-gray-100 p-8">
-
       <div className="max-w-6xl mx-auto">
+
+        {/* Filters */}
         <div className="grid md:grid-cols-3 gap-4 mb-6">
 
-        <input
+          <input
             type="text"
             placeholder="Search transaction..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="border rounded-lg p-3"
-        />
+          />
 
-        <select
+          <select
             value={filterType}
             onChange={(e) => setFilterType(e.target.value)}
             className="border rounded-lg p-3"
-        >
+          >
+            <option value="all">All Types</option>
+            <option value="income">Income</option>
+            <option value="expense">Expense</option>
+          </select>
 
-            <option value="all">
-            All Types
-            </option>
-
-            <option value="income">
-            Income
-            </option>
-
-            <option value="expense">
-            Expense
-            </option>
-
-        </select>
-
-        <select
+          <select
             value={filterCategory}
             onChange={(e) => setFilterCategory(e.target.value)}
             className="border rounded-lg p-3"
-        >
-
-            <option value="all">
-            All Categories
-            </option>
-
+          >
+            <option value="all">All Categories</option>
             <option value="Food">Food</option>
-
             <option value="Transport">Transport</option>
-
             <option value="Bills">Bills</option>
-
             <option value="Shopping">Shopping</option>
-
             <option value="Salary">Salary</option>
-
-        </select>
+          </select>
 
         </div>
-        {/* FORM */}
-        
 
+        {/* Form */}
         <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
 
           <h1 className="text-3xl font-bold text-blue-600 mb-6">
-
-            {editingId
-              ? "Edit Transaction"
-              : "Add Transaction"}
-
+            {editingId ? "Edit Transaction" : "Add Transaction"}
           </h1>
 
           <form
-          
-            onSubmit={
-              editingId
-                ? handleUpdate
-                : handleSubmit
-            }
+            onSubmit={editingId ? handleUpdate : handleSubmit}
             className="grid grid-cols-1 md:grid-cols-3 gap-4"
           >
 
@@ -291,13 +223,8 @@ const filteredTransactions = transactions.filter((transaction) => {
               onChange={handleChange}
               className="border rounded-lg p-3"
             >
-              <option value="expense">
-                Expense
-              </option>
-
-              <option value="income">
-                Income
-              </option>
+              <option value="expense">Expense</option>
+              <option value="income">Income</option>
             </select>
 
             <input
@@ -327,72 +254,37 @@ const filteredTransactions = transactions.filter((transaction) => {
               className="border rounded-lg p-3"
             />
 
-            <div className="md:col-span-2 flex gap-3">
-              <div>
+            <div className="md:col-span-3">
 
-            <label className="block mb-2">
-            Recurring Transaction
-            </label>
+              <label className="flex items-center gap-2 mb-3">
+                <input
+                  type="checkbox"
+                  name="isRecurring"
+                  checked={formData.isRecurring}
+                  onChange={handleChange}
+                />
+                Recurring Transaction
+              </label>
 
-            <input
-            type="checkbox"
-            checked={formData.isRecurring}
-            onChange={(e)=>
-            setFormData({
-            ...formData,
-            isRecurring:e.target.checked
-            })
-            }
-            />
-            {formData.isRecurring && (
-
-                <div>
-
-                <label>
-                Frequency
-                </label>
-
+              {formData.isRecurring && (
                 <select
-                value={formData.frequency}
-                onChange={(e)=>
-                setFormData({
-                ...formData,
-                frequency:e.target.value
-                })
-                }
-                className="border p-3 rounded-lg w-full"
+                  name="frequency"
+                  value={formData.frequency}
+                  onChange={handleChange}
+                  className="border rounded-lg p-3 w-full mb-3"
                 >
-
-                <option value="daily">
-                Daily
-                </option>
-
-                <option value="weekly">
-                Weekly
-                </option>
-
-                <option value="monthly">
-                Monthly
-                </option>
-
-                <option value="yearly">
-                Yearly
-                </option>
-
+                  <option value="daily">Daily</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly">Monthly</option>
+                  <option value="yearly">Yearly</option>
                 </select>
+              )}
 
-                </div>
-
-                )}
-
-            </div>
               <button
                 type="submit"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg mr-3"
               >
-                {editingId
-                  ? "Update Transaction"
-                  : "Add Transaction"}
+                {editingId ? "Update Transaction" : "Add Transaction"}
               </button>
 
               {editingId && (
@@ -410,43 +302,8 @@ const filteredTransactions = transactions.filter((transaction) => {
           </form>
 
         </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
 
-  <input
-    type="text"
-    placeholder="Search by title..."
-    value={search}
-    onChange={(e) => setSearch(e.target.value)}
-    className="border rounded-lg p-3"
-  />
-
-  <select
-    value={categoryFilter}
-    onChange={(e) => setCategoryFilter(e.target.value)}
-    className="border rounded-lg p-3"
-  >
-    <option value="All">All Categories</option>
-    <option value="Food">Food</option>
-    <option value="Transport">Transport</option>
-    <option value="Shopping">Shopping</option>
-    <option value="Bills">Bills</option>
-    <option value="Entertainment">Entertainment</option>
-    <option value="Salary">Salary</option>
-    <option value="Other">Other</option>
-  </select>
-
-  <select
-    value={typeFilter}
-    onChange={(e) => setTypeFilter(e.target.value)}
-    className="border rounded-lg p-3"
-  >
-    <option value="All">All Types</option>
-    <option value="income">Income</option>
-    <option value="expense">Expense</option>
-  </select>
-
-</div>
-        {/* TABLE */}
+        {/* Table */}
 
         <div className="bg-white rounded-xl shadow-lg p-6">
 
@@ -463,9 +320,8 @@ const filteredTransactions = transactions.filter((transaction) => {
         </div>
 
       </div>
-
     </div>
   );
 }
 
-export default Transactions;
+export default Transaction;
