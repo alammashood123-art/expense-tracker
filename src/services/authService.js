@@ -1,10 +1,10 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://expense-tracker-backend-production.up.railway.app",
+  baseURL: "https://expense-tracker-backend-production.up.railway.app/api/auth",
 });
 
-// Automatically attach token to every request
+
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
 
